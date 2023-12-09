@@ -20,6 +20,6 @@ harvest = { path = "./harvest" }
 
 [workspace]
 members = [
-    "harvest",
-    "widget",
+  "harvest",
+  "widget",
 ]
