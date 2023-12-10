@@ -36,8 +36,14 @@ fn main() {
             .fg("#000000")
             .bg_func(|b| {
                 match b.is_charging {
-                    true => "#ffee00",
-                    false => "#51c449",
+                    true => "#DFA000",
+                    false => {
+                        if b.percentage <= 20 {
+                            "#F85552"
+                        } else {
+                            "#8DA101"
+                        }
+                    }
                 }
                 .to_string()
             }),
