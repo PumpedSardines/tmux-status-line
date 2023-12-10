@@ -239,8 +239,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "tmux"
-version = "0.1.0"
+name = "tmux_status_line"
+version = "0.1.1"
 dependencies = [
  "battery",
  "chrono",
