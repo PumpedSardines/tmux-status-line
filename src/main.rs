@@ -1,6 +1,9 @@
 mod battery;
+mod harvest;
 mod misc;
 mod widget;
+
+use std::fs;
 
 use widget::Widget;
 
@@ -30,7 +33,29 @@ macro_rules! widgets {
 }
 
 fn main() {
+    let current_dir = homedir::get_my_home().unwrap().unwrap();
+    let path = current_dir.join(".harvest");
+
+    let data = fs::read_to_string(path).ok();
+    #[derive(serde::Deserialize)]
+    struct Credentials {
+        username: String,
+        password: String,
+    }
+    let credentials = data.map(|d| serde_json::from_str::<Credentials>(&d).unwrap());
+
     widgets![
+        w!(harvest::HarvestWidget::new(
+            credentials
+                .as_ref()
+                .map(|c| c.username.clone())
+                .unwrap_or("".to_string()),
+            credentials
+                .as_ref()
+                .map(|c| c.password.clone())
+                .unwrap_or("".to_string())
+        ))
+        .enabled(credentials.is_some()),
         w!(misc::UptimeWidget::new()),
         w!(battery::BatteryWidget::new())
             .fg("#000000")

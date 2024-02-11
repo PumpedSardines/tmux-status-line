@@ -11,6 +11,7 @@ pub trait WidgetRenderer<T> {
 pub struct Widget<T> {
     renderer: Box<dyn WidgetRenderer<T>>,
     max_width: Option<usize>,
+    enabled: bool,
     fgf: Box<dyn Fn(&T) -> String>,
     bgf: Box<dyn Fn(&T) -> String>,
 }
@@ -20,9 +21,15 @@ impl<T> Widget<T> {
         Widget {
             renderer,
             max_width: None,
+            enabled: true,
             fgf: Box::new(|_| "default".to_string()),
             bgf: Box::new(|_| "default".to_string()),
         }
+    }
+
+    pub fn enabled(mut self, enabled: bool) -> Widget<T> {
+        self.enabled = enabled;
+        self
     }
 
     pub fn fg(mut self, fg: &str) -> Widget<T> {
@@ -53,6 +60,10 @@ impl<T> Widget<T> {
     }
 
     pub fn display(&self) -> Option<String> {
+        if !self.enabled {
+            return None;
+        }
+
         match self.renderer.get_data() {
             Ok(data) => {
                 let fg = (self.fgf)(&data);
