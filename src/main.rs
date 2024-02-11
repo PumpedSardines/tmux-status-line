@@ -55,6 +55,9 @@ fn main() {
                 .map(|c| c.password.clone())
                 .unwrap_or("".to_string())
         ))
+        .fg("#FFFFFF")
+        .bg("#125724")
+        .max_width(50)
         .enabled(credentials.is_some()),
         w!(misc::UptimeWidget::new()),
         w!(battery::BatteryWidget::new())
