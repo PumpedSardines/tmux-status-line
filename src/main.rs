@@ -1,11 +1,9 @@
-mod battery;
-mod harvest;
-mod misc;
-mod widget;
+mod widgets;
+use widgets::*;
 
 use std::fs;
 
-use widget::Widget;
+use tmux_status_line::Widget;
 
 macro_rules! w {
     ($w:expr) => {
@@ -35,7 +33,6 @@ macro_rules! widgets {
 fn main() {
     let current_dir = homedir::get_my_home().unwrap().unwrap();
     let path = current_dir.join(".harvest");
-
     let data = fs::read_to_string(path).ok();
     #[derive(serde::Deserialize)]
     struct Credentials {
@@ -45,7 +42,7 @@ fn main() {
     let credentials = data.map(|d| serde_json::from_str::<Credentials>(&d).unwrap());
 
     widgets![
-        w!(harvest::HarvestWidget::new(
+        w!(HarvestWidget::new(
             credentials
                 .as_ref()
                 .map(|c| c.username.clone())
@@ -55,26 +52,24 @@ fn main() {
                 .map(|c| c.password.clone())
                 .unwrap_or("".to_string())
         ))
-        .fg("#FFFFFF")
-        .bg("#125724")
+        .fg("#ffffff")
+        .bg("#c74900")
         .max_width(50)
         .enabled(credentials.is_some()),
-        w!(misc::UptimeWidget::new()),
-        w!(battery::BatteryWidget::new())
-            .fg("#000000")
-            .bg_func(|b| {
-                match b.is_charging {
-                    true => "#DFA000",
-                    false => {
-                        if b.percentage <= 20 {
-                            "#F85552"
-                        } else {
-                            "#8DA101"
-                        }
+        w!(UptimeWidget::new()),
+        w!(BatteryWidget::new()).fg("#000000").bg_func(|b| {
+            match b.is_charging {
+                true => "#dfa000",
+                false => {
+                    if b.percentage <= 20 {
+                        "#f85552"
+                    } else {
+                        "#8da101"
                     }
                 }
-                .to_string()
-            }),
-        w!(misc::DateWidget::new_from_pattern("%a %H:%M %Y-%m-%d"))
+            }
+            .to_string()
+        }),
+        w!(DateWidget::new_from_pattern("%a %H:%M %Y-%m-%d"))
     ];
 }

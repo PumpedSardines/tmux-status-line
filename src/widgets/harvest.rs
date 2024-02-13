@@ -1,3 +1,6 @@
+use tmux_status_line::Cache;
+use tmux_status_line::WidgetRenderer;
+
 pub struct HarvestWidget {
     api: harvest::Api,
 }
@@ -8,9 +11,22 @@ impl<'a> HarvestWidget {
         }
     }
 }
-impl<'a> super::widget::WidgetRenderer<Option<harvest::RunningTimerInfo>> for HarvestWidget {
+
+impl<'a> WidgetRenderer<Option<harvest::RunningTimerInfo>> for HarvestWidget {
     fn get_data(&self) -> Result<Option<harvest::RunningTimerInfo>, Box<dyn std::error::Error>> {
+        let cache = Cache::new("harvest", 20);
+
+        let data = cache.load::<harvest::RunningTimerInfo>();
+
+        if let Some(data) = data {
+            return Ok(Some(data));
+        }
+
         let resp: Option<harvest::RunningTimerInfo> = self.api.running_timer()?.into();
+
+        if let Some(resp) = resp.clone() {
+            cache.save(resp);
+        }
 
         Ok(resp)
     }

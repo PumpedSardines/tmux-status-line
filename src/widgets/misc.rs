@@ -1,4 +1,5 @@
 use chrono;
+use tmux_status_line::WidgetRenderer;
 
 pub struct UptimeWidget {}
 impl UptimeWidget {
@@ -17,7 +18,7 @@ macro_rules! format_plural {
     };
 }
 
-impl super::widget::WidgetRenderer<String> for UptimeWidget {
+impl WidgetRenderer<String> for UptimeWidget {
     fn get_data(&self) -> Result<String, Box<dyn std::error::Error>> {
         let uptime = uptime_lib::get()?;
 
@@ -53,7 +54,7 @@ impl<'a> DateWidget<'a> {
         DateWidget { pattern }
     }
 }
-impl<'a> super::widget::WidgetRenderer<String> for DateWidget<'a> {
+impl<'a> WidgetRenderer<String> for DateWidget<'a> {
     fn get_data(&self) -> Result<String, Box<dyn std::error::Error>> {
         let now = chrono::Local::now().naive_local();
 

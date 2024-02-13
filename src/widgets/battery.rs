@@ -1,6 +1,7 @@
 use battery::units::ratio::percent;
 use battery::{Battery, Manager};
 use std::{error::Error, fmt};
+use tmux_status_line::WidgetRenderer;
 
 #[derive(Debug)]
 pub struct NoBatteryError;
@@ -26,7 +27,7 @@ impl BatteryWidget {
         BatteryWidget {}
     }
 }
-impl super::widget::WidgetRenderer<BatteryData> for BatteryWidget {
+impl WidgetRenderer<BatteryData> for BatteryWidget {
     fn get_data(&self) -> Result<BatteryData, Box<dyn std::error::Error>> {
         let battery = get_battery()?;
 

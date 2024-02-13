@@ -1,3 +1,5 @@
+use crate::Cache;
+
 pub trait WidgetRenderer<T> {
     fn get_data(&self) -> Result<T, Box<dyn std::error::Error>>;
 
