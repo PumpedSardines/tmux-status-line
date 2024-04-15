@@ -59,7 +59,7 @@ fn main() {
         w!(UptimeWidget::new()),
         w!(BatteryWidget::new()).fg("#000000").bg_func(|b| {
             match b.is_charging {
-                true => "#dfa000",
+                true => "#ffff00",
                 false => {
                     if b.percentage <= 20 {
                         "#f85552"
