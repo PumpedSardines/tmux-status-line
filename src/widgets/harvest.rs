@@ -22,7 +22,7 @@ impl<'a> WidgetRenderer<Option<harvest::RunningTimerInfo>> for HarvestWidget {
             return Ok(Some(data));
         }
 
-        let resp: Option<harvest::RunningTimerInfo> = self.api.running_timer()?.into();
+        let resp: Option<harvest::RunningTimerInfo> = self.api.running_timer().ok().flatten();
 
         if let Some(resp) = resp.clone() {
             cache.save(resp);
